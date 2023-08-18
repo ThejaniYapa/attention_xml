@@ -6,7 +6,7 @@ train:
   labels: data/Amazon-670K/train_labels.npy
 
 valid:
-  size: 4000
+  size: 120
 
 test:
   texts: data/Amazon-670K/test_texts.npy

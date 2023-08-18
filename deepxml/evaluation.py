@@ -30,6 +30,9 @@ def get_mlb(classes: TClass = None, mlb: TMlb = None, targets: TTarget = None):
         mlb = MultiLabelBinarizer(classes, sparse_output=True)
     if mlb is None and targets is not None:
         if isinstance(targets, csr_matrix):
+            print("range(targets.shape[1])",range(targets.shape[1]))
+            print(type(targets))
+            print(targets)
             mlb = MultiLabelBinarizer(range(targets.shape[1]), sparse_output=True)
             mlb.fit(None)
         else:

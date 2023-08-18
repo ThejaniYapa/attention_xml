@@ -42,7 +42,7 @@ class Model(object):
         scores = self.model(train_x)
         loss = self.loss_fn(scores, train_y)
         loss.backward()
-        self.clip_gradient()
+        #self.clip_gradient()
         self.optimizer.step(closure=None)
         return loss.item()
 
@@ -98,6 +98,8 @@ class Model(object):
     def clip_gradient(self):
         if self.gradient_clip_value is not None:
             max_norm = max(self.gradient_norm_queue)
+            print("max_norm",max_norm)
+            print("self.gradient_norm_queue",self.gradient_norm_queue)
             total_norm = torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm * self.gradient_clip_value)
             self.gradient_norm_queue.append(min(total_norm, max_norm * 2.0, 1.0))
             if total_norm > max_norm * self.gradient_clip_value:
