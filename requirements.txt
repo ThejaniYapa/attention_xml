@@ -1,6 +1,5 @@
 click==7.0
 ruamel.yaml==0.16.5
-numpy
 scipy
 scikit-learn
 gensim
@@ -9,4 +8,5 @@ nltk
 tqdm
 joblib
 logzero
+numpy
 gdown

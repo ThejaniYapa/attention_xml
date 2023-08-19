@@ -5,12 +5,13 @@ Created on 2018/12/9
 @author yrh
 
 """
-
+import pandas as pd
 import numpy as np
 from functools import partial
 from scipy.sparse import csr_matrix
 from sklearn.preprocessing import MultiLabelBinarizer
 from typing import Union, Optional, List, Iterable, Hashable
+from scipy import sparse
 
 
 __all__ = ['get_precision', 'get_p_1', 'get_p_3', 'get_p_5', 'get_p_10',
@@ -26,15 +27,18 @@ TClass = Optional[List[Hashable]]
 
 
 def get_mlb(classes: TClass = None, mlb: TMlb = None, targets: TTarget = None):
+    print("mlb:",mlb)
     if classes is not None:
         mlb = MultiLabelBinarizer(classes, sparse_output=True)
     if mlb is None and targets is not None:
         if isinstance(targets, csr_matrix):
-            print("range(targets.shape[1])",range(targets.shape[1]))
-            print(type(targets))
-            print(targets)
-            mlb = MultiLabelBinarizer(range(targets.shape[1]), sparse_output=True)
-            mlb.fit(None)
+            #mlb = MultiLabelBinarizer(range(targets.shape[1]), sparse_output=True)
+            #mlb.fit(None)
+            mlb = MultiLabelBinarizer(sparse_output=True)
+            print("target<csr_matrix> :",targets.get_shape())
+            print("target<ndarray> :",targets.toarray().shape)
+            print(targets.toarray())
+            mlb.fit(targets.toarray())
         else:
             mlb = MultiLabelBinarizer(sparse_output=True)
             mlb.fit(targets)
@@ -42,10 +46,17 @@ def get_mlb(classes: TClass = None, mlb: TMlb = None, targets: TTarget = None):
 
 
 def get_precision(prediction: TPredict, targets: TTarget, mlb: TMlb = None, classes: TClass = None, top=5):
+    print("prediction",type(prediction),"size",prediction.shape)
+    print("targets",type(targets),"size",targets.get_shape())
+    sparse.save_npz("targets_before.npz", targets)
     mlb = get_mlb(classes, mlb, targets)
     if not isinstance(targets, csr_matrix):
         targets = mlb.transform(targets)
+    print("mlb classes:",len(mlb.classes_))
     prediction = mlb.transform(prediction[:, :top])
+    print("after====================")
+    print("prediction",type(prediction),"size",prediction.get_shape())
+    print("targets",type(targets),"size",targets.get_shape())
     return prediction.multiply(targets).sum() / (top * targets.shape[0])
 
 

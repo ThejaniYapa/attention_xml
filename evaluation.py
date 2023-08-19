@@ -13,7 +13,8 @@ import click
 import numpy as np
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from deepxml.evaluation import *
+#from deepxml.evaluation import *
+from deepxml.evaluation_xcmatrix import *
 
 
 @click.command()
